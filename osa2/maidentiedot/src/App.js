@@ -3,7 +3,6 @@ import axios from "axios";
 
 const Countries = (props) => {
   if (props.notesToShow.length === 1) {
-    console.log(props.notesToShow[0].languages);
     return (
       <div>
         <h2>{props.notesToShow[0].name}</h2>
@@ -16,6 +15,7 @@ const Countries = (props) => {
           ))}
         </ul>
         <img src={props.notesToShow[0].flag} alt="Flag" />
+        <h2>Wather in {props.notesToShow[0].name}</h2>
       </div>
     );
   }
@@ -26,12 +26,12 @@ const Countries = (props) => {
   return (
     <ul>
       {props.notesToShow.map((name) => (
-        <form onSubmit={props.onSubmit}>
-          <div key={name.name}>
-            <li key={name.name}>{name.name}</li>
-            <button type="submit">show</button>
-          </div>
-        </form>
+        <div key={name.name}>
+          <li key={name.name}>{name.name}</li>
+          <button onClick={() => props.setShowAll(name.name)} type="submit">
+            show
+          </button>
+        </div>
       ))}
     </ul>
   );
@@ -47,11 +47,6 @@ function App() {
     });
   }, []);
 
-  const handleCountryChange = (event) => {
-    console.log(event.target.value);
-    setCountries(event.target.value);
-  };
-
   const handleAllChange = (event) => {
     console.log(event.target.value);
     setShowAll(event.target.value);
@@ -62,17 +57,10 @@ function App() {
     name.name.toLocaleLowerCase().includes(showAll.toLocaleLowerCase())
   );
 
-  const yksi = (event) => {
-    event.preventDefault();
-
-    notesToShow.filter((name) => name);
-    console.log(notesToShow);
-  };
-
   return (
     <div>
       find countries <input value={showAll} onChange={handleAllChange} />
-      <Countries notesToShow={notesToShow} onSubmit={yksi} />
+      <Countries notesToShow={notesToShow} setShowAll={setShowAll} />
     </div>
   );
 }
