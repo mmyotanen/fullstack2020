@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 import personService from "./services/persons";
+import "./index.css";
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+
+  return <div className="error">{message}</div>;
+};
 
 const Filter = (props) => {
   return (
@@ -20,9 +29,7 @@ const PersonForm = (props) => {
         number: <input value={props.value2} onChange={props.onChange2} />
       </div>
       <div>
-        <button onClick={() => console.log("painoin")} type="submit">
-          add
-        </button>
+        <button type="submit">add</button>
       </div>
     </form>
   );
@@ -39,6 +46,12 @@ const Persons = (props) => {
               onClick={() => {
                 if (window.confirm(`Delete ${name.name} ?`)) {
                   personService.deletePerson(name.id);
+                  props.setErrorMessage(
+                    `Person '${name.name}' was already removed from server`
+                  );
+                  setTimeout(() => {
+                    props.setErrorMessage(null);
+                  }, 5000);
                 }
               }}
               type="submit"
@@ -57,6 +70,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [showAll, setShowAll] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -88,25 +102,43 @@ const App = () => {
     };
     let onkoListassa = false;
     let indeksi = 0;
+    let id = 0;
     persons.forEach(function (item, index, array) {
       if (item.name === newName) {
         console.log(newName);
         onkoListassa = true;
         indeksi = index;
+        id = item.id;
       }
     });
 
     if (onkoListassa) {
       if (window.confirm(`${newName} is already added to phonebook`)) {
-        personService.update(persons[indeksi].id, noteObject);
-        console.log(newName + "hei");
-        setNewName("1");
+        personService.update(persons[indeksi].id, noteObject).catch((error) => {
+          setErrorMessage(`Person ${newName} already deleted `);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+          setPersons(persons.filter((n) => n.id !== id));
+        });
+        setErrorMessage(`Person ${newName} new number is '${newNumber}' `);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+
+        setPersons(
+          persons.map((person) => (person.id !== id ? person : noteObject))
+        );
       }
     } else {
       setPersons(persons.concat(noteObject));
       setNewName("");
       setNewNumber("");
       personService.create(noteObject);
+      setErrorMessage(`Person ${newName} with number '${newNumber}' added `);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
     }
   };
 
@@ -117,6 +149,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter value={showAll} onChange={handleAllChange} />
       <h2>add a new</h2>
       <PersonForm
@@ -127,7 +160,7 @@ const App = () => {
         onChange2={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons notesToShow={notesToShow} />
+      <Persons notesToShow={notesToShow} setErrorMessage={setErrorMessage} />
     </div>
   );
 };
