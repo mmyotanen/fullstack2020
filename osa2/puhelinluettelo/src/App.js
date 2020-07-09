@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
+import personService from "./services/persons";
 
 const Filter = (props) => {
   return (
@@ -19,7 +20,9 @@ const PersonForm = (props) => {
         number: <input value={props.value2} onChange={props.onChange2} />
       </div>
       <div>
-        <button type="submit">add</button>
+        <button onClick={() => console.log("painoin")} type="submit">
+          add
+        </button>
       </div>
     </form>
   );
@@ -27,13 +30,25 @@ const PersonForm = (props) => {
 
 const Persons = (props) => {
   return (
-    <ul>
-      {props.notesToShow.map((name) => (
-        <li key={name.name}>
-          {name.name} {name.number}
-        </li>
-      ))}
-    </ul>
+    <form onSubmit={props.onSubmit}>
+      <ul>
+        {props.notesToShow.map((name) => (
+          <li key={name.name}>
+            {name.name} {name.number}
+            <button
+              onClick={() => {
+                if (window.confirm(`Delete ${name.name} ?`)) {
+                  personService.deletePerson(name.id);
+                }
+              }}
+              type="submit"
+            >
+              delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </form>
   );
 };
 
@@ -44,8 +59,8 @@ const App = () => {
   const [showAll, setShowAll] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -66,25 +81,32 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault();
+
     const noteObject = {
       name: newName,
       number: newNumber,
     };
     let onkoListassa = false;
-
+    let indeksi = 0;
     persons.forEach(function (item, index, array) {
       if (item.name === newName) {
         console.log(newName);
         onkoListassa = true;
+        indeksi = index;
       }
     });
 
     if (onkoListassa) {
-      window.alert(`${newName} is already added to phonebook`);
+      if (window.confirm(`${newName} is already added to phonebook`)) {
+        personService.update(persons[indeksi].id, noteObject);
+        console.log(newName + "hei");
+        setNewName("1");
+      }
     } else {
       setPersons(persons.concat(noteObject));
       setNewName("");
       setNewNumber("");
+      personService.create(noteObject);
     }
   };
 
