@@ -118,7 +118,13 @@ const App = () => {
           `${newName} is already added to phonebook, change number`
         )
       ) {
-        personService.update(persons[indeksi].id, noteObject);
+        personService.update(persons[indeksi].id, noteObject).catch((error) => {
+          setErrorMessage(`Person ${newName} already deleted `);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+          setPersons(persons.filter((n) => n.id !== id));
+        });
         setErrorMessage(`Person ${newName} new number is '${newNumber}' `);
         setTimeout(() => {
           setErrorMessage(null);
