@@ -113,14 +113,12 @@ const App = () => {
     });
 
     if (onkoListassa) {
-      if (window.confirm(`${newName} is already added to phonebook`)) {
-        personService.update(persons[indeksi].id, noteObject).catch((error) => {
-          setErrorMessage(`Person ${newName} already deleted `);
-          setTimeout(() => {
-            setErrorMessage(null);
-          }, 5000);
-          setPersons(persons.filter((n) => n.id !== id));
-        });
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, change number`
+        )
+      ) {
+        personService.update(persons[indeksi].id, noteObject);
         setErrorMessage(`Person ${newName} new number is '${newNumber}' `);
         setTimeout(() => {
           setErrorMessage(null);
