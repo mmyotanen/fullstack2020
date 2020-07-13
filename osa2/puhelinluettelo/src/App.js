@@ -37,31 +37,29 @@ const PersonForm = (props) => {
 
 const Persons = (props) => {
   return (
-    <form onSubmit={props.onSubmit}>
-      <ul>
-        {props.notesToShow.map((name) => (
-          <li key={name.name}>
-            {name.name} {name.number}
-            <button
-              onClick={() => {
-                if (window.confirm(`Delete ${name.name} ?`)) {
-                  personService.deletePerson(name.id);
-                  props.setErrorMessage(
-                    `Person '${name.name}' was already removed from server`
-                  );
-                  setTimeout(() => {
-                    props.setErrorMessage(null);
-                  }, 5000);
-                }
-              }}
-              type="submit"
-            >
-              delete
-            </button>
-          </li>
-        ))}
-      </ul>
-    </form>
+    <ul>
+      {props.notesToShow.map((name) => (
+        <li key={name.name}>
+          {name.name} {name.number}
+          <button
+            onClick={() => {
+              if (window.confirm(`Delete ${name.name} ?`)) {
+                personService.deletePerson(name.id);
+                props.setPersons(props.persons.filter((n) => n.id !== name.id));
+                props.setErrorMessage(
+                  `Person '${name.name}' removed from server`
+                );
+                setTimeout(() => {
+                  props.setErrorMessage(null);
+                }, 5000);
+              }
+            }}
+          >
+            delete
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 };
 
@@ -164,7 +162,12 @@ const App = () => {
         onChange2={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons notesToShow={notesToShow} setErrorMessage={setErrorMessage} />
+      <Persons
+        persons={persons}
+        setPersons={setPersons}
+        notesToShow={notesToShow}
+        setErrorMessage={setErrorMessage}
+      />
     </div>
   );
 };
