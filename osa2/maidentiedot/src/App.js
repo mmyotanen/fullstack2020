@@ -6,16 +6,21 @@ const Countries = (props) => {
     return (
       <div>
         <h2>{props.notesToShow[0].name}</h2>
-        <p>{props.notesToShow[0].capital}</p>
-        <p>{props.notesToShow[0].population}</p>
+        <p>Capital: {props.notesToShow[0].capital}</p>
+        <p>Population: {props.notesToShow[0].population}</p>
         <h2>Languages</h2>
         <ul>
           {props.notesToShow[0].languages.map((name) => (
             <li key={name.name}>{name.name}</li>
           ))}
         </ul>
-        <img src={props.notesToShow[0].flag} alt="Flag" />
-        <h2>Wather in {props.notesToShow[0].name}</h2>
+        <img
+          src={props.notesToShow[0].flag}
+          alt="Flag"
+          width="200"
+          height="100"
+        />
+        <h2>Weather in {props.notesToShow[0].name}</h2>
       </div>
     );
   }
