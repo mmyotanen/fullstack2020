@@ -29,7 +29,9 @@ const PersonForm = (props) => {
         number: <input value={props.value2} onChange={props.onChange2} />
       </div>
       <div>
-        <button type="submit">add</button>
+        <button className="buttonAdd" type="submit">
+          add
+        </button>
       </div>
     </form>
   );
@@ -42,6 +44,7 @@ const Persons = (props) => {
         <li key={name.name}>
           {name.name} {name.number}
           <button
+            className="buttonRemove"
             onClick={() => {
               if (window.confirm(`Delete ${name.name} ?`)) {
                 personService.deletePerson(name.id);
@@ -133,10 +136,22 @@ const App = () => {
         );
       }
     } else {
-      setPersons(persons.concat(noteObject));
+      //setPersons(persons.concat(noteObject));
       setNewName("");
       setNewNumber("");
-      personService.create(noteObject);
+      personService
+        .create(noteObject)
+        .then((createdPerson) => {
+          setPersons(persons.concat(createdPerson));
+        })
+        .catch((error) => {
+          // pääset käsiksi palvelimen palauttamaan virheilmoitusolioon näin
+          console.log(error.response.data);
+          setErrorMessage(error.response.data.error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
       setErrorMessage(`Person ${newName} with number '${newNumber}' added `);
       setTimeout(() => {
         setErrorMessage(null);
