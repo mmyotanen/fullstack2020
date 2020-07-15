@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Weather from "./Weather.js";
 
 const Countries = (props) => {
   if (props.notesToShow.length === 1) {
@@ -21,6 +22,7 @@ const Countries = (props) => {
           height="100"
         />
         <h2>Weather in {props.notesToShow[0].name}</h2>
+        <Weather capital={props.notesToShow[0].capital} />
       </div>
     );
   }
@@ -53,9 +55,7 @@ function App() {
   }, []);
 
   const handleAllChange = (event) => {
-    console.log(event.target.value);
     setShowAll(event.target.value);
-    console.log(countries);
   };
 
   const notesToShow = countries.filter((name) =>
