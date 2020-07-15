@@ -30,4 +30,4 @@ const Weather = ({ capital }) => {
   );
 };
 export default Weather;
-// 457540e8a1eae49d107b39e1cc8e21d7
+
