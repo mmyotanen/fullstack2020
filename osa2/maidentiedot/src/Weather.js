@@ -29,8 +29,5 @@ const Weather = ({ capital }) => {
     </div>
   );
 };
-export default Weather;
-<<<<<<< HEAD
-=======
 
->>>>>>> 398ff397ad8a553c941e6849fcd3a9591f3b1d22
+export default Weather;
