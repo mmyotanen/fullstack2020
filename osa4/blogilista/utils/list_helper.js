@@ -24,6 +24,8 @@ const favoriteBlog = (blogs) => {
 };
 
 const mostBlogs = () => {
+  let tulostus = {};
+  let suurin = 0;
   return 0;
 };
 
