@@ -23,13 +23,35 @@ const favoriteBlog = (blogs) => {
   return helper;
 };
 
-const mostBlogs = () => {
-  let tulostus = {};
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) return 0;
+  let blogienMaara = {};
+
   let suurin = 0;
-  return 0;
+  let kirjoittaja = "";
+
+  for (blog of blogs) {
+    if (blogienMaara[blog.author]) {
+      blogienMaara[blog.author] += 1;
+      if (suurin < blogienMaara[blog.author]) {
+        suurin = blogienMaara[blog.author];
+        kirjoittaja = blog.author;
+      }
+    } else {
+      blogienMaara[blog.author] = 1;
+      kirjoittaja = blog.author;
+      if (suurin === 0) {
+        suurin = blogienMaara[blog.author];
+        kirjoittaja = blog.author;
+      }
+    }
+  }
+
+  let tulostus = { author: kirjoittaja, blogs: suurin };
+  return tulostus;
 };
 
-const mostLikes = () => {
+const mostLikes = (blogs) => {
   return 0;
 };
 
