@@ -52,7 +52,31 @@ const mostBlogs = (blogs) => {
 };
 
 const mostLikes = (blogs) => {
-  return 0;
+  if (blogs.length === 0) return 0;
+  let blogienMaara = {};
+
+  let suurin = 0;
+  let kirjoittaja = "";
+
+  for (blog of blogs) {
+    if (blogienMaara[blog.author]) {
+      blogienMaara[blog.author] += blog.likes;
+      if (suurin < blogienMaara[blog.author]) {
+        suurin = blogienMaara[blog.author];
+        kirjoittaja = blog.author;
+      }
+    } else {
+      blogienMaara[blog.author] = blog.likes;
+
+      if (suurin === 0) {
+        suurin = blogienMaara[blog.author];
+        kirjoittaja = blog.author;
+      }
+    }
+  }
+
+  let tulostus = { author: kirjoittaja, blogs: suurin };
+  return tulostus;
 };
 
 module.exports = {
