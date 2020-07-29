@@ -39,7 +39,7 @@ const mostBlogs = (blogs) => {
       }
     } else {
       blogienMaara[blog.author] = 1;
-      kirjoittaja = blog.author;
+
       if (suurin === 0) {
         suurin = blogienMaara[blog.author];
         kirjoittaja = blog.author;
