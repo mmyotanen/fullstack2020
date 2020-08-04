@@ -62,6 +62,21 @@ test("likes default to 0", async () => {
   expect(likesToZero.likes).toBe(0);
 });
 
+test("if url and title missing bad request", async () => {
+  const newBlog = {
+    _id: "5a422a851b54a676234d17f7",
+
+    author: "Michael Chan",
+
+    likes: 5,
+    __v: 0,
+  };
+  await api.post("/api/blogs").send(newBlog).expect(400);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
