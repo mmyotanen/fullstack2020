@@ -1,1 +1,1 @@
-Osan 6 tehtävät.
+Osan 7 tehtävät.
