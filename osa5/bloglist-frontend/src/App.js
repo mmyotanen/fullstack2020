@@ -10,7 +10,6 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-  window.localStorage.setItem("name", "juha tauriainen");
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -46,6 +45,11 @@ const App = () => {
     }
   };
 
+  const handleLogout = () => {
+    window.localStorage.clear();
+    setUser(null);
+  };
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -79,7 +83,7 @@ const App = () => {
         <div>
           <p>
             {user.name} logged in{" "}
-            <button onClick={() => window.localStorage.clear()}>logout</button>
+            <button onClick={() => handleLogout()}>logout</button>
           </p>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
