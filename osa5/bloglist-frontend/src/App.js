@@ -2,6 +2,15 @@ import React, { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import "./index.css";
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+
+  return <div className="error">{message}</div>;
+};
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -41,6 +50,10 @@ const App = () => {
       setNewTitle("");
       setNewAuthor("");
       setNewUrl("");
+      setErrorMessage(`Blog ${newTitle} added `);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
     });
   };
 
@@ -59,7 +72,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setErrorMessage("wrong credentials");
+      setErrorMessage("wrong username or password");
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -73,6 +86,7 @@ const App = () => {
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
+      <Notification message={errorMessage} />
       <div>
         username
         <input
@@ -134,6 +148,7 @@ const App = () => {
         loginForm()
       ) : (
         <div>
+          <Notification message={errorMessage} />
           <p>
             {user.name} logged in{" "}
             <button onClick={() => handleLogout()}>logout</button>
