@@ -4,6 +4,7 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
+import BlogForm from "./components/BlogForm";
 
 import "./index.css";
 
@@ -17,9 +18,7 @@ const Notification = ({ message }) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [newAuthor, setNewAuthor] = useState("");
-  const [newUrl, setNewUrl] = useState("");
-  const [newTitle, setNewTitle] = useState("");
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -40,44 +39,17 @@ const App = () => {
     }
   }, []);
 
-  const addBlog = (event) => {
-    event.preventDefault();
-
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-      likes: 0,
-    };
+  const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
     blogService.create(blogObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog));
-      setNewTitle("");
-      setNewAuthor("");
-      setNewUrl("");
 
-      setErrorMessage(`Blog ${newTitle} added `);
+      setErrorMessage(`Blog ${blogObject.title} added `);
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
     });
   };
-
-  /*
- const addBlog = (blogObject) => {
-  
-  //blogFormRef.current.toggleVisibility();
-  blogService.create(blogObject).then((returnedBlog) => {
-    setBlogs(blogs.concat(returnedBlog));
-    
-
-    setErrorMessage(`Blog ${newTitle} added `);
-    setTimeout(() => {
-      setErrorMessage(null);
-    }, 5000);
-  });
-};
-*/
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -119,37 +91,9 @@ const App = () => {
     </div>
   );
 
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value);
-  };
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value);
-  };
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value);
-  };
-
   const blogForm = () => (
     <Togglable buttonLabel="new blog" ref={blogFormRef}>
-      <div>
-        <h1>create new</h1>
-        <form onSubmit={addBlog}>
-          <p>
-            title:
-            <input value={newTitle} onChange={handleTitleChange} />
-          </p>
-          <p>
-            author:
-            <input value={newAuthor} onChange={handleAuthorChange} />
-          </p>
-          <p>
-            url:
-            <input value={newUrl} onChange={handleUrlChange} />
-          </p>
-
-          <button type="submit">create</button>
-        </form>
-      </div>
+      <BlogForm createBlog={addBlog} />
     </Togglable>
   );
 
