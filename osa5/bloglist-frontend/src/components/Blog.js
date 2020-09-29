@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-const Blog = ({ blog }) => {
+
+const Blog = ({ blog, addLike }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -10,6 +11,10 @@ const Blog = ({ blog }) => {
 
   const [allInfo, toggleAllInfo] = useState(false);
 
+  const like = (event) => {
+    addLike({ blog });
+  };
+
   if (allInfo === true) {
     return (
       <div style={blogStyle}>
@@ -17,7 +22,7 @@ const Blog = ({ blog }) => {
         <button onClick={() => toggleAllInfo(!allInfo)}> hide </button>
         <br />
         {blog.url} <br />
-        likes: {blog.likes} <button> like </button>
+        likes: {blog.likes} <button onClick={like}> like </button>
         <br />
         {blog.user.username}
         <br />

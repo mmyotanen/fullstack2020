@@ -97,6 +97,10 @@ const App = () => {
     </Togglable>
   );
 
+  const addLike = ({ blog }) => {
+    console.log(blog);
+  };
+
   return (
     <div>
       <h2>log in to application</h2>
@@ -113,7 +117,7 @@ const App = () => {
           {blogs
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog key={blog.id} blog={blog} addLike={addLike} />
             ))}
         </div>
       )}
