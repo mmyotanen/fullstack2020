@@ -36,9 +36,22 @@ blogRouter.post("/", async (request, response) => {
   response.json(savedBlog.toJSON());
 });
 
-blogRouter.delete("/:id", async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id);
-  response.status(204).end();
+blogsRouter.delete("/:id", async (request, response) => {
+  const body = request.body;
+
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token missing or invalid" });
+  }
+  const user = await User.findById(decodedToken.id);
+  const blog = await Blog.findById(request.params.id);
+
+  if (blog.user.toString() === user.id.toString()) {
+    await Blog.findByIdAndRemove(request.params.id);
+    response.status(204).end();
+  } else {
+    response.status(401).end();
+  }
 });
 
 blogRouter.put("/:id", async (request, response, next) => {
@@ -48,11 +61,14 @@ blogRouter.put("/:id", async (request, response, next) => {
     content: body.content,
     author: body.author,
     url: body.url,
-    likes: 55,
+    likes: body.likes,
   };
 
-  await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
-  response.json(blog.toJSON());
+  const res = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  });
+  console.log(res);
+  response.json(res.toJSON());
 });
 
 module.exports = blogRouter;
